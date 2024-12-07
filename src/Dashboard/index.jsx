@@ -1,83 +1,67 @@
 import React, { useState } from "react";
+import { Layout, Menu, theme } from "antd";
+import { Link } from "react-router-dom";
+import "../assets/css/dashboard.css";
 import {
-  DesktopOutlined,
-  FileOutlined,
-  PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
+  AreaChartOutlined,
+  FormOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
-import { Breadcrumb, Layout, Menu, theme } from "antd";
-const { Header, Content, Footer, Sider } = Layout;
-function getItem(label, key, icon, children) {
-  return {
-    key,
-    icon,
-    children,
-    label,
-  };
-}
-const items = [
-  getItem("Option 1", "1", <PieChartOutlined />),
-  getItem("Option 2", "2", <DesktopOutlined />),
-  getItem("User", "sub1", <UserOutlined />, [
-    getItem("Tom", "3"),
-    getItem("Bill", "4"),
-    getItem("Alex", "5"),
-  ]),
-  getItem("Team", "sub2", <TeamOutlined />, [
-    getItem("Team 1", "6"),
-    getItem("Team 2", "8"),
-  ]),
-  getItem("Files", "9", <FileOutlined />),
-];
+
+const { Content, Footer, Sider } = Layout;
+
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
+
   return (
-    <Layout
-      style={{
-        minHeight: "100vh",
-      }}
-    >
+    <Layout className="dashboard-container">
       <Sider
         collapsible
         collapsed={collapsed}
         onCollapse={(value) => setCollapsed(value)}
-        style={{
-          marginLeft: "-10px",
-          marginTop: "-10px",
-        }}
+        className="dashboard-sider"
       >
-        <div className="demo-logo-vertical" />
+        <div className="dashboard-logo">Quản Lí Bệnh Nhân</div>
         <Menu
           theme="dark"
           defaultSelectedKeys={["1"]}
           mode="inline"
-          items={items}
+          items={[
+            {
+              key: "1",
+              icon: <AreaChartOutlined />,
+              label: (
+                <Link to="/dashboard" className="dashboard-link">
+                  Doanh Thu
+                </Link>
+              ),
+            },
+            {
+              key: "2",
+              icon: <FormOutlined />,
+              label: (
+                <Link to="/dashboard" className="dashboard-link">
+                  Danh sách bệnh nhân
+                </Link>
+              ),
+            },
+            {
+              key: "3",
+              icon: <UserAddOutlined />,
+              label: (
+                <Link to="/dashboard" className="dashboard-link">
+                  Khám bệnh
+                </Link>
+              ),
+            },
+          ]}
         />
       </Sider>
       <Layout>
-        <Header
-          style={{
-            padding: 0,
-            background: colorBgContainer,
-          }}
-        />
-        <Content
-          style={{
-            margin: "0 16px",
-          }}
-        >
-          <Breadcrumb
-            style={{
-              margin: "16px 0",
-            }}
-          >
-            <Breadcrumb.Item>User</Breadcrumb.Item>
-            <Breadcrumb.Item>Bill</Breadcrumb.Item>
-          </Breadcrumb>
+        <Content className="dashboard-content">
           <div
             style={{
               padding: 24,
@@ -89,15 +73,12 @@ const Dashboard = () => {
             Bill is a cat.
           </div>
         </Content>
-        <Footer
-          style={{
-            textAlign: "center",
-          }}
-        >
+        <Footer className="dashboard-footer">
           Ant Design ©{new Date().getFullYear()} Created by PatientCare
         </Footer>
       </Layout>
     </Layout>
   );
 };
+
 export default Dashboard;
