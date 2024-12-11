@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Layout, Menu, theme } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Outlet } from "react-router-dom";
 import "../assets/css/dashboard.css";
 import {
   AreaChartOutlined,
+  DatabaseOutlined,
   FormOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -34,7 +35,7 @@ const Dashboard = () => {
               key: "1",
               icon: <AreaChartOutlined />,
               label: (
-                <Link to="/dashboard" className="dashboard-link">
+                <Link to="/" className="dashboard-link">
                   Doanh Thu
                 </Link>
               ),
@@ -43,7 +44,7 @@ const Dashboard = () => {
               key: "2",
               icon: <FormOutlined />,
               label: (
-                <Link to="/dashboard" className="dashboard-link">
+                <Link to="/listpatient" className="dashboard-link">
                   Danh sách bệnh nhân
                 </Link>
               ),
@@ -52,8 +53,17 @@ const Dashboard = () => {
               key: "3",
               icon: <UserAddOutlined />,
               label: (
-                <Link to="/dashboard" className="dashboard-link">
+                <Link to="/patient" className="dashboard-link">
                   Khám bệnh
+                </Link>
+              ),
+            },
+            {
+              key: "4",
+              icon: <DatabaseOutlined />,
+              label: (
+                <Link to="/medicine" className="dashboard-link">
+                  Thuốc
                 </Link>
               ),
             },
@@ -70,7 +80,7 @@ const Dashboard = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            Bill is a cat.
+            <Outlet></Outlet>
           </div>
         </Content>
         <Footer className="dashboard-footer">
