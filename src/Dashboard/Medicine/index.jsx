@@ -11,7 +11,7 @@ function Medicine() {
 
   return (
     <div className="container mt-5">
-      <h2 className="text-center mb-4">Medicine Form</h2>
+      <h2 className="text-center mb-4">Nhập tên thuốc</h2>
       <div className="card p-4 shadow-sm">
         <AntForm
           form={form}
@@ -22,41 +22,58 @@ function Medicine() {
           <div className="row">
             <div className="col-md-6">
               <AntForm.Item
-                label="Medicine Name"
+                label="Tên loại thuốc"
                 name="medicineName"
                 rules={[
                   {
                     required: true,
-                    message: "Please input the medicine name!",
+                    message: "Bạn chưa nhập thuốc!",
                   },
                 ]}
               >
-                <Input placeholder="Enter medicine name" />
+                <Input placeholder="Nhập tên thuốc" />
               </AntForm.Item>
             </div>
             <div className="col-md-3">
               <AntForm.Item
-                label="Quantity"
+                label="Số lượng thuốc nhập vào "
                 name="quantity"
                 rules={[
-                  { required: true, message: "Please input the quantity!" },
+                  {
+                    required: true,
+                    message: "Hãy nhập số lượng thuốc của bạn !",
+                  },
                 ]}
               >
-                <Input type="number" placeholder="Enter quantity" />
+                <Input type="number" placeholder="Nhập số lượng thuốc " />
               </AntForm.Item>
             </div>
             <div className="col-md-3">
               <AntForm.Item
-                label="Price per Unit"
+                label="Giá thuốc nhập vào"
                 name="unitPrice"
                 rules={[
                   {
                     required: true,
-                    message: "Please input the price per unit!",
+                    message: "Hãy nhập giá tiền thuốc của bạn !",
                   },
                 ]}
               >
-                <Input type="number" placeholder="Enter price per unit" />
+                <Input type="number" placeholder="Nhập giá tiền nhập vào " />
+              </AntForm.Item>
+            </div>
+            <div className="col-md-3">
+              <AntForm.Item
+                label="Giá thuốc bán ra"
+                name="unitPrice"
+                rules={[
+                  {
+                    required: true,
+                    message: "Hãy nhập giá tiền thuốc của bạn !",
+                  },
+                ]}
+              >
+                <Input type="number" placeholder="Nhập giá tiền thuốc bán ra" />
               </AntForm.Item>
             </div>
           </div>
