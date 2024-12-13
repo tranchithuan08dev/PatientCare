@@ -10,25 +10,17 @@ function Patient() {
 
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">Medical Information Form</h2>
+      <h2 className="mb-4 text-center">Nhập thông tin khám bệnh</h2>
       <Form layout="vertical" onFinish={onFinish}>
+        <h3>Nhập thông tin bệnh nhận:</h3>
         <div className="row">
-          <div className="col-md-4">
-            <Form.Item
-              label="Mã Y Tế"
-              name="medicalId"
-              rules={[{ required: true, message: "Mã Y Tế là bắt buộc" }]}
-            >
-              <Input placeholder="240183" />
-            </Form.Item>
-          </div>
           <div className="col-md-4">
             <Form.Item
               label="Họ tên"
               name="fullName"
               rules={[{ required: true, message: "Họ tên là bắt buộc" }]}
             >
-              <Input placeholder="Nguyễn Hoàng Khánh Ngọc" />
+              <Input placeholder="Họ tên bệnh nhân" />
             </Form.Item>
           </div>
           <div className="col-md-4">
@@ -61,7 +53,7 @@ function Patient() {
                 { pattern: /^\d{10}$/, message: "Số điện thoại không hợp lệ" },
               ]}
             >
-              <Input placeholder="0394737794" />
+              <Input placeholder="Số điện thoại người liên lạc" />
             </Form.Item>
           </div>
           <div className="col-md-4">
@@ -100,9 +92,10 @@ function Patient() {
           </div>
           <div className="col-md-4">
             <Form.Item label="Số nhà" name="houseNumber">
-              <Input placeholder="an bình đông" />
+              <Input placeholder="Nhập địa chỉ nhà." />
             </Form.Item>
           </div>
+          <h3> Chuẩn đoán:</h3>
           <div className="col-md-4">
             <Form.Item
               label="Cân nặng (kg)"
@@ -113,7 +106,7 @@ function Patient() {
             </Form.Item>
           </div>
           <div className="col-md-4">
-            <Form.Item label="Chiều cao (cm)" name="height">
+            <Form.Item label="Chiều cao (m)" name="height">
               <Input />
             </Form.Item>
           </div>
