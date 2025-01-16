@@ -5,6 +5,7 @@ import "../assets/css/dashboard.css";
 import {
   AreaChartOutlined,
   DatabaseOutlined,
+  FileDoneOutlined,
   FormOutlined,
   UserAddOutlined,
 } from "@ant-design/icons";
@@ -35,17 +36,8 @@ const Dashboard = () => {
               key: "1",
               icon: <AreaChartOutlined />,
               label: (
-                <Link to="/" className="dashboard-link">
+                <Link to="/revenue" className="dashboard-link">
                   Doanh Thu
-                </Link>
-              ),
-            },
-            {
-              key: "2",
-              icon: <FormOutlined />,
-              label: (
-                <Link to="/listpatient" className="dashboard-link">
-                  Danh sách bệnh nhân
                 </Link>
               ),
             },
@@ -59,11 +51,30 @@ const Dashboard = () => {
               ),
             },
             {
+              key: "2",
+              icon: <FormOutlined />,
+              label: (
+                <Link to="/listpatient" className="dashboard-link">
+                  Danh sách bệnh nhân
+                </Link>
+              ),
+            },
+
+            {
               key: "4",
               icon: <DatabaseOutlined />,
               label: (
+                <Link to="/listmedicine" className="dashboard-link">
+                  Danh Sách thuốc
+                </Link>
+              ),
+            },
+            {
+              key: "5",
+              icon: <FileDoneOutlined />,
+              label: (
                 <Link to="/medicine" className="dashboard-link">
-                  Thuốc
+                  Thêm thuốc
                 </Link>
               ),
             },
