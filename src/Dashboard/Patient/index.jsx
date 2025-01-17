@@ -1,5 +1,6 @@
 import React from "react";
 import { Form, Input, Radio, Select, DatePicker, Button } from "antd";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -62,80 +63,14 @@ function Patient() {
             </Form.Item>
           </div>
           <div className="col-md-4">
-            <Form.Item
-              label="Tỉnh/Thành"
-              name="province"
-              rules={[{ required: true, message: "Tỉnh/Thành là bắt buộc" }]}
-            >
-              <Select placeholder="Chọn tỉnh/thành">
-                <Option value="TienGiang">Tiền Giang</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item
-              label="Quận/Huyện"
-              name="district"
-              rules={[{ required: true, message: "Quận/Huyện là bắt buộc" }]}
-            >
-              <Select placeholder="Chọn quận/huyện">
-                <Option value="CaiBe">Cái Bè</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item label="Phường/Xã" name="ward">
-              <Select placeholder="Chọn phường/xã">
-                <Option value="XaDongHoaHiep">Xã Đông Hòa Hiệp</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item label="Số nhà" name="houseNumber">
-              <Input placeholder="Nhập địa chỉ nhà." />
-            </Form.Item>
-          </div>
-          <h3> Chuẩn đoán:</h3>
-          <div className="col-md-4">
-            <Form.Item
-              label="Cân nặng (kg)"
-              name="weight"
-              rules={[{ type: "number", message: "Nhập số hợp lệ" }]}
-            >
-              <Input placeholder="16.00" />
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item label="Chiều cao (m)" name="height">
-              <Input />
-            </Form.Item>
-          </div>
-          <div className="col-md-12">
-            <Form.Item label="Triệu chứng lâm sàng" name="symptoms">
-              <Input.TextArea rows={3} />
-            </Form.Item>
-          </div>
-          <div className="col-md-12">
-            <Form.Item label="Chẩn đoán" name="diagnosis">
-              <Input placeholder="VPQ co thắt" />
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item label="Cách giải quyết" name="solution">
-              <Select placeholder="Chọn cách giải quyết">
-                <Option value="prescription">Cấp toa và hẹn tái khám</Option>
-              </Select>
-            </Form.Item>
-          </div>
-          <div className="col-md-4">
-            <Form.Item label="Ngày hẹn" name="appointmentDate">
-              <DatePicker style={{ width: "100%" }} />
+            <Form.Item label="Địa chỉ" name="adress">
+              <Input placeholder="Nhập địa chỉ" />
             </Form.Item>
           </div>
         </div>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
+        <Link to="/diagnosisForm">
+          <Button type="primary">Tiếp Theo</Button>
+        </Link>
       </Form>
     </div>
   );
