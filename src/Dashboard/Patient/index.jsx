@@ -10,11 +10,15 @@ function Patient() {
   };
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-4 text-center">Nhập thông tin khám bệnh</h2>
+    <div
+      style={{ padding: "20px", background: "#f9f9f9", borderRadius: "8px" }}
+    >
+      <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
+        Nhập thông tin khám bệnh
+      </h2>
       <Form layout="vertical" onFinish={onFinish}>
-        <h3>Nhập thông tin bệnh nhận:</h3>
-        <div className="row">
+        <h3 style={{ marginBottom: "20px" }}>Nhập thông tin bệnh nhân:</h3>
+        <div className="row" style={{ gap: "16px" }}>
           <div className="col-md-4">
             <Form.Item
               label="Họ tên"
@@ -59,18 +63,20 @@ function Patient() {
           </div>
           <div className="col-md-4">
             <Form.Item label="Người liên hệ" name="contactPerson">
-              <Input />
+              <Input placeholder="Nhập tên người liên hệ" />
             </Form.Item>
           </div>
           <div className="col-md-4">
-            <Form.Item label="Địa chỉ" name="adress">
+            <Form.Item label="Địa chỉ" name="address">
               <Input placeholder="Nhập địa chỉ" />
             </Form.Item>
           </div>
         </div>
-        <Link to="/diagnosisForm">
-          <Button type="primary">Tiếp Theo</Button>
-        </Link>
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Link to="/diagnosisForm">
+            <Button type="primary">Tiếp Theo</Button>
+          </Link>
+        </div>
       </Form>
     </div>
   );
