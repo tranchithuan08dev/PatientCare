@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Space, Table, Tag, Input, Flex, Button } from "antd";
+import { Table, Input, Button, Space } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 
 const columns = [
@@ -28,35 +28,51 @@ const columns = [
     title: "Chỉnh sửa",
     key: "action",
     render: (_, record) => (
-      <Flex gap="small" wrap>
+      <Space size="middle">
         <Button type="primary">Xem Chi Tiết</Button>
-      </Flex>
+      </Space>
     ),
   },
 ];
 
-const data = [
+// Sample data (without using faker)
+const sampleData = [
   {
-    key: "1",
+    key: 1,
     name: "John Brown",
     age: 32,
-    address: "New York No. 1 Lake Park",
-    tags: ["nice", "developer"],
+    address: "Viêm xoang",
+    date: "01/01/2025",
   },
   {
-    key: "2",
+    key: 2,
     name: "Jim Green",
     age: 42,
-    address: "London No. 1 Lake Park",
-    tags: ["loser"],
+    address: "Đau lưng",
+    date: "02/01/2025",
   },
   {
-    key: "3",
+    key: 3,
     name: "Joe Black",
     age: 32,
-    address: "Sydney No. 1 Lake Park",
-    tags: ["cool", "teacher"],
+    address: "Cảm cúm",
+    date: "03/01/2025",
   },
+  {
+    key: 4,
+    name: "Sara White",
+    age: 28,
+    address: "Viêm phổi",
+    date: "04/01/2025",
+  },
+  {
+    key: 5,
+    name: "David Wang",
+    age: 36,
+    address: "Cảm lạnh",
+    date: "05/01/2025",
+  },
+  // Add more sample data here as needed
 ];
 
 const ListPatient = () => {
@@ -66,26 +82,41 @@ const ListPatient = () => {
     setSearchText(e.target.value);
   };
 
-  const filteredData = data.filter((item) =>
+  const filteredData = sampleData.filter((item) =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
 
   return (
-    <div>
+    <div style={{ margin: "0 20px" }}>
       <h2 className="mb-4 text-center">Danh sách thông tin khám bệnh</h2>
 
-      {/* Wrapper div for search */}
+      {/* Search input */}
       <div style={{ textAlign: "right", marginBottom: 20 }}>
         <Input
-          placeholder="Search by name"
+          placeholder="Tìm kiếm theo tên"
           prefix={<SearchOutlined />}
           value={searchText}
           onChange={handleSearch}
-          style={{ width: 300 }}
+          style={{
+            width: 300,
+            borderRadius: 8,
+            padding: "5px 15px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
         />
       </div>
 
-      <Table columns={columns} dataSource={filteredData} />
+      {/* Table with custom styling */}
+      <Table
+        columns={columns}
+        dataSource={filteredData}
+        pagination={{ pageSize: 5 }}
+        style={{
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+          borderRadius: 10,
+          overflow: "hidden",
+        }}
+      />
     </div>
   );
 };
