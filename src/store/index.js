@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import medicine from "./medicineSlice";
 
 const store = configureStore({
-  reducer: {},
+  reducer: {
+    MEDICINE: medicine,
+  },
 });
 
 export default store;
