@@ -3,7 +3,7 @@ import axios from "axios";
 const API = {
   call: () => {
     return axios.create({
-      baseURL: `http://localhost:5000`,
+      baseURL: `http://localhost:5000/api/`,
     });
   },
 };
