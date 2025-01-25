@@ -1,26 +1,39 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Table,
-  Tag,
-  Drawer,
-  Form,
-  Input,
-  Row,
-  Col,
-  Select,
-  DatePicker,
-  Space,
-} from "antd";
-import { PlusOutlined } from "@ant-design/icons";
-
-const { Option } = Select;
+import React, { useEffect, useState } from "react";
+import { Button, Table, Tag, Drawer, Form, Input, Row, Col, Space } from "antd";
+import { fetchMedicineDetail, fetchMedicines } from "../../store/medicineSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const ListMedicine = () => {
   const [open, setOpen] = useState(false);
+  const [form] = Form.useForm();
+  const dispatch = useDispatch();
+  const medicineData = useSelector((state) => state.MEDICINE.medicines);
+  const medicineDataDetail = useSelector(
+    (state) => state.MEDICINE.medicineDetail
+  );
+  console.log("data", medicineDataDetail);
 
-  const showDrawer = () => {
+  useEffect(() => {
+    dispatch(fetchMedicines());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (medicineDataDetail) {
+      form.setFieldsValue({
+        medicineName: medicineDataDetail.medicinesname,
+        quantity: medicineDataDetail.quantity,
+        priceIn: medicineDataDetail.pricein,
+        priceOut: medicineDataDetail.priceout,
+        description: medicineDataDetail.description,
+        dosageinstructions: medicineDataDetail.dosageinstructions,
+      });
+    }
+  }, [medicineDataDetail, form]);
+
+  const showDrawer = (medicineId) => {
     setOpen(true);
+    dispatch(fetchMedicineDetail(medicineId));
+    console.log("id", medicineId);
   };
 
   const onClose = () => {
@@ -30,8 +43,8 @@ const ListMedicine = () => {
   const columns = [
     {
       title: "Tên Thuốc",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "medicinesname",
+      key: "medicinesname",
       render: (text) => <a>{text}</a>,
     },
     {
@@ -70,39 +83,25 @@ const ListMedicine = () => {
       title: "Chỉnh Sửa",
       key: "action",
       render: (_, record) => (
-        <Button type="primary" onClick={showDrawer} className="mb-3">
+        <Button
+          type="primary"
+          onClick={() => showDrawer(record.key)}
+          className="mb-3"
+        >
           Edit
         </Button>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "Paracetamol",
-      quantity: 50,
-      priceIn: "2,000 VND",
-      priceOut: "5,000 VND",
-      tags: ["còn hàng"],
-    },
-    {
-      key: "2",
-      name: "Vitamin C",
-      quantity: 0,
-      priceIn: "3,000 VND",
-      priceOut: "6,000 VND",
-      tags: ["hết hàng"],
-    },
-    {
-      key: "3",
-      name: "Ibuprofen",
-      quantity: 20,
-      priceIn: "10,000 VND",
-      priceOut: "15,000 VND",
-      tags: ["còn hàng"],
-    },
-  ];
+  const data = medicineData.map((item) => ({
+    key: item.medicinesid,
+    medicinesname: item.medicinesname,
+    quantity: item.quantity,
+    priceIn: item.pricein,
+    priceOut: item.priceout,
+    tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
+  }));
 
   return (
     <div>
@@ -115,23 +114,19 @@ const ListMedicine = () => {
         width={720}
         onClose={onClose}
         open={open}
-        bodyStyle={{
-          paddingBottom: 80,
-        }}
         extra={
           <Space>
-            <Button onClick={onClose}>Hủy</Button>
             <Button type="primary" onClick={onClose}>
-              Lưu
+              Hủy
             </Button>
           </Space>
         }
       >
-        <Form layout="vertical" hideRequiredMark>
+        <Form layout="vertical" form={form}>
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="name"
+                name="medicineName"
                 label="Tên Thuốc"
                 rules={[{ required: true, message: "Vui lòng nhập tên thuốc" }]}
               >
@@ -178,6 +173,17 @@ const ListMedicine = () => {
                 name="description"
                 label="Mô Tả"
                 rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
+              >
+                <Input.TextArea rows={4} placeholder="Mô tả thuốc" />
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={24}>
+              <Form.Item
+                name="dosageinstructions"
+                label="Liều Dùng"
+                rules={[{ required: true, message: "Mô tả mõi khi sự dụng" }]}
               >
                 <Input.TextArea rows={4} placeholder="Mô tả thuốc" />
               </Form.Item>
