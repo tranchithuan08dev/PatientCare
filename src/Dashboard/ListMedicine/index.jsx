@@ -1,17 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { Button, Table, Tag, Drawer, Form, Input, Row, Col, Space } from "antd";
-import { fetchMedicineDetail, fetchMedicines } from "../../store/medicineSlice";
+import {
+  Button,
+  Table,
+  Tag,
+  Drawer,
+  Form,
+  Input,
+  Row,
+  Col,
+  Space,
+  message,
+} from "antd";
+import {
+  fetchMedicineDetail,
+  fetchMedicines,
+  fetchUpdateMedicine,
+} from "../../store/medicineSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const ListMedicine = () => {
   const [open, setOpen] = useState(false);
+  const [medicineId, setMedicineId] = useState();
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const medicineData = useSelector((state) => state.MEDICINE.medicines);
   const medicineDataDetail = useSelector(
     (state) => state.MEDICINE.medicineDetail
   );
-  console.log("data", medicineDataDetail);
 
   useEffect(() => {
     dispatch(fetchMedicines());
@@ -33,7 +48,7 @@ const ListMedicine = () => {
   const showDrawer = (medicineId) => {
     setOpen(true);
     dispatch(fetchMedicineDetail(medicineId));
-    console.log("id", medicineId);
+    setMedicineId(medicineId), console.log("id", medicineId);
   };
 
   const onClose = () => {
@@ -103,6 +118,31 @@ const ListMedicine = () => {
     tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
   }));
 
+  //Update
+  const submitForm = (values) => {
+    console.log("values", values);
+    const data = {
+      id: medicineId,
+      medicinesName: values.medicineName,
+      priceIn: values.priceIn,
+      priceOut: values.priceOut,
+      quantity: values.quantity,
+      description: values.description,
+      dosageInstructions: values.dosageinstructions,
+    };
+    console.log("data", data);
+
+    dispatch(fetchUpdateMedicine(data))
+      .then(() => {
+        message.success("Medicine updated successfully!");
+        setOpen(false);
+        dispatch(fetchMedicines());
+      })
+      .catch((error) => {
+        message.error("Failed to update medicine. Please try again.");
+        console.error(error);
+      });
+  };
   return (
     <div>
       <h2 className="mb-4 text-center">Danh Sách Thuốc</h2>
@@ -122,7 +162,11 @@ const ListMedicine = () => {
           </Space>
         }
       >
-        <Form layout="vertical" form={form}>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={(values) => submitForm(values)}
+        >
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -189,6 +233,11 @@ const ListMedicine = () => {
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item wrapperCol={{ offset: 9 }}>
+            <Button type="primary" htmlType="submit">
+              Lưu
+            </Button>
+          </Form.Item>
         </Form>
       </Drawer>
     </div>
