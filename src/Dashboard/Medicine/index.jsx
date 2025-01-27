@@ -1,23 +1,13 @@
-import React, { useState } from "react";
-import {
-  Button,
-  Input,
-  Form as AntForm,
-  InputNumber,
-  Typography,
-  Row,
-  Col,
-} from "antd";
+import React from "react";
+import { Button, Input, Form, InputNumber, Typography, Row, Col } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
 function MedicineForm() {
-  const [form] = AntForm.useForm();
-  const [medicineData, setMedicineData] = useState(null);
+  const [form] = Form.useForm();
 
   const onFinish = (values) => {
-    setMedicineData(values);
     console.log("Form Data:", values);
   };
 
@@ -31,7 +21,7 @@ function MedicineForm() {
           <InfoCircleOutlined /> Hãy nhập đầy đủ thông tin thuốc bạn muốn nhập
           vào hệ thống. Các trường có dấu * là bắt buộc.
         </Paragraph>
-        <AntForm
+        <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
@@ -39,100 +29,121 @@ function MedicineForm() {
         >
           <Row gutter={16}>
             <Col span={12}>
-              <AntForm.Item
-                label="Mã thuốc"
-                name="medicine_id"
-                rules={[{ required: true, message: "Bạn chưa nhập mã thuốc!" }]}
-              >
-                <Input placeholder="Nhập mã thuốc" />
-              </AntForm.Item>
-            </Col>
-            <Col span={12}>
-              <AntForm.Item
+              <Form.Item
                 label="Tên thuốc"
                 name="name"
                 rules={[
                   { required: true, message: "Bạn chưa nhập tên thuốc!" },
+                  { min: 3, message: "Tên thuốc phải có ít nhất 3 ký tự!" },
+                  {
+                    max: 100,
+                    message: "Tên thuốc không được vượt quá 100 ký tự!",
+                  },
                 ]}
               >
                 <Input placeholder="Nhập tên thuốc" />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <AntForm.Item
+              <Form.Item
                 label="Giá thuốc nhập vào"
                 name="price_in"
                 rules={[
                   { required: true, message: "Hãy nhập giá thuốc nhập vào!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Giá thuốc nhập phải lớn hơn 0!",
+                  },
                 ]}
               >
                 <InputNumber
                   style={{ width: "100%" }}
-                  min={0}
+                  min={1}
                   placeholder="Nhập giá thuốc nhập vào"
                 />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
             <Col span={12}>
-              <AntForm.Item
+              <Form.Item
                 label="Giá thuốc bán ra"
                 name="price_out"
                 rules={[
                   { required: true, message: "Hãy nhập giá thuốc bán ra!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Giá thuốc bán phải lớn hơn 0!",
+                  },
                 ]}
               >
                 <InputNumber
                   style={{ width: "100%" }}
-                  min={0}
+                  min={1}
                   placeholder="Nhập giá thuốc bán ra"
                 />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={12}>
-              <AntForm.Item
+              <Form.Item
                 label="Số lượng thuốc"
                 name="quantity"
                 rules={[
                   { required: true, message: "Hãy nhập số lượng thuốc!" },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Số lượng phải lớn hơn 0!",
+                  },
                 ]}
               >
                 <InputNumber
                   style={{ width: "100%" }}
-                  min={0}
+                  min={1}
                   placeholder="Nhập số lượng thuốc"
                 />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
             <Col span={12}>
-              <AntForm.Item
+              <Form.Item
                 label="Hướng dẫn liều lượng"
                 name="dosage_instructions"
                 rules={[
                   { required: true, message: "Hãy nhập hướng dẫn liều lượng!" },
+                  {
+                    max: 500,
+                    message: "Hướng dẫn liều lượng không được quá 500 ký tự!",
+                  },
                 ]}
               >
                 <Input.TextArea
                   rows={4}
                   placeholder="Nhập hướng dẫn liều lượng"
                 />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
           </Row>
 
           <Row gutter={16}>
             <Col span={24}>
-              <AntForm.Item label="Mô tả thuốc" name="description">
+              <Form.Item
+                label="Mô tả thuốc"
+                name="description"
+                rules={[
+                  { max: 1000, message: "Mô tả không được quá 1000 ký tự!" },
+                ]}
+              >
                 <Input.TextArea
                   rows={4}
                   placeholder="Nhập mô tả thuốc (tùy chọn)"
                 />
-              </AntForm.Item>
+              </Form.Item>
             </Col>
           </Row>
 
@@ -141,15 +152,8 @@ function MedicineForm() {
               Submit
             </Button>
           </div>
-        </AntForm>
+        </Form>
       </div>
-
-      {medicineData && (
-        <div className="mt-4">
-          <Title level={4}>Dữ liệu đã gửi:</Title>
-          <pre>{JSON.stringify(medicineData, null, 2)}</pre>
-        </div>
-      )}
     </div>
   );
 }
