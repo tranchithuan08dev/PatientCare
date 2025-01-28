@@ -1,14 +1,23 @@
 import React from "react";
 import { Button, Input, Form, InputNumber, Typography, Row, Col } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { fetchCreateMedicine } from "../../store/medicineSlice";
 
 const { Title, Paragraph } = Typography;
 
 function MedicineForm() {
   const [form] = Form.useForm();
-
-  const onFinish = (values) => {
-    console.log("Form Data:", values);
+  const dispatch = useDispatch();
+  const onFinish = (data) => {
+    dispatch(fetchCreateMedicine(data))
+      .then(() => {
+        message.success("Bạn đã nhập thuóc thành công!");
+        form.resetFields();
+      })
+      .catch((error) => {
+        message.error("Xin Lỗi! Hãy nhập lại thuốc");
+      });
   };
 
   return (
@@ -31,7 +40,7 @@ function MedicineForm() {
             <Col span={12}>
               <Form.Item
                 label="Tên thuốc"
-                name="name"
+                name="medicinesName"
                 rules={[
                   { required: true, message: "Bạn chưa nhập tên thuốc!" },
                   { min: 3, message: "Tên thuốc phải có ít nhất 3 ký tự!" },
@@ -50,7 +59,7 @@ function MedicineForm() {
             <Col span={12}>
               <Form.Item
                 label="Giá thuốc nhập vào"
-                name="price_in"
+                name="priceIn"
                 rules={[
                   { required: true, message: "Hãy nhập giá thuốc nhập vào!" },
                   {
@@ -70,7 +79,7 @@ function MedicineForm() {
             <Col span={12}>
               <Form.Item
                 label="Giá thuốc bán ra"
-                name="price_out"
+                name="priceOut"
                 rules={[
                   { required: true, message: "Hãy nhập giá thuốc bán ra!" },
                   {
@@ -113,7 +122,7 @@ function MedicineForm() {
             <Col span={12}>
               <Form.Item
                 label="Hướng dẫn liều lượng"
-                name="dosage_instructions"
+                name="dosageInstructions"
                 rules={[
                   { required: true, message: "Hãy nhập hướng dẫn liều lượng!" },
                   {
@@ -149,7 +158,7 @@ function MedicineForm() {
 
           <div className="text-center mt-3">
             <Button type="primary" htmlType="submit">
-              Submit
+              Tạo thuốc
             </Button>
           </div>
         </Form>
