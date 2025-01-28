@@ -2,12 +2,23 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import medicineServices from "../services/medicineService";
 
 const initialState = {
+  createMedicine: {},
   medicines: [],
   medicineDetail: {},
   updateMedicine: {},
 };
 
 const name = `medicine`;
+
+export const fetchCreateMedicine = createAsyncThunk(
+  `${name}/fetchCreateMedicine`,
+  async (data) => {
+    const res = await medicineServices.create(data);
+    console.log("create data", res);
+
+    return res;
+  }
+);
 
 export const fetchMedicines = createAsyncThunk(
   `${name}/fetchMedicines`,
@@ -46,6 +57,9 @@ const medicineSlice = createSlice({
     });
     builder.addCase(fetchUpdateMedicine.fulfilled, (state, action) => {
       state.updateMedicine = action.payload;
+    });
+    builder.addCase(fetchCreateMedicine.fulfilled, (state, action) => {
+      state.createMedicine = action.payload;
     });
   },
 });
