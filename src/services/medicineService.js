@@ -10,6 +10,9 @@ const medicineServices = {
   update: (data) => {
     return API.call().patch(`/medicines/update?id=${data.id}`, data);
   },
+  create: (data) => {
+    return API.call().post(`/medicines/create`, data);
+  },
 };
 
 export default medicineServices;
