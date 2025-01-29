@@ -1,12 +1,25 @@
 import React from "react";
-import { Form, Input, Radio, Select, DatePicker, Button } from "antd";
-import { Link } from "react-router-dom";
-
-const { Option } = Select;
+import { Form, Input, Radio, DatePicker, Button } from "antd";
+import { useDispatch } from "react-redux";
+import { fetchCreateUser } from "../../store/userSlice";
+import { useNavigate } from "react-router-dom";
 
 function Patient() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const onFinish = (values) => {
-    console.log("Form Submitted:", values);
+    const data = {
+      fullName: values.fullName,
+      gender: values.gender,
+      dateOfBirth: values.dob?.format("YYYY-MM-DD"),
+      phoneNumber: values.phone,
+      address: values.address,
+      role: "Patient",
+    };
+
+    dispatch(fetchCreateUser(data)).then(() => {
+      navigate("/diagnosisForm");
+    });
   };
 
   return (
@@ -61,21 +74,17 @@ function Patient() {
               <Input placeholder="Số điện thoại người liên lạc" />
             </Form.Item>
           </div>
-          <div className="col-md-4">
-            <Form.Item label="Người liên hệ" name="contactPerson">
-              <Input placeholder="Nhập tên người liên hệ" />
-            </Form.Item>
-          </div>
+
           <div className="col-md-4">
             <Form.Item label="Địa chỉ" name="address">
-              <Input placeholder="Nhập địa chỉ" />
+              <Input.TextArea rows={4} placeholder="Nhập địa chỉ" />
             </Form.Item>
           </div>
         </div>
         <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Link to="/diagnosisForm">
-            <Button type="primary">Tiếp Theo</Button>
-          </Link>
+          <Button type="primary" htmlType="submit">
+            Tiếp Theo
+          </Button>
         </div>
       </Form>
     </div>
