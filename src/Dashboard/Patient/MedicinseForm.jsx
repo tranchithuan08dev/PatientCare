@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, InputNumber, Select, Button, Table } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchMedicineDetail, fetchMedicines } from "../../store/medicineSlice";
 
 const { Option } = Select;
 
@@ -7,7 +9,20 @@ function MedicineForm() {
   const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [quantityMedicine, setQuantityMedicine] = useState(0);
+  const [medicineId, setMedicineId] = useState();
+  const dispacth = useDispatch();
+  const medicineData = useSelector((state) => state.MEDICINE.medicines);
+  const medicineDataDetail = useSelector(
+    (state) => state.MEDICINE.medicineDetail
+  );
+  console.log("medicineDataDetail", medicineDataDetail);
 
+  console.log("dataSource", dataSource);
+  // console.log("medicineData", medicineData);
+  useEffect(() => {
+    dispacth(fetchMedicines());
+  }, []);
   const columns = [
     {
       title: "Xóa",
@@ -81,11 +96,31 @@ function MedicineForm() {
     },
   ];
 
+  useEffect(() => {
+    dispacth(fetchMedicineDetail(medicineId));
+  }, [form]);
+
   const handleAdd = (values) => {
+    console.log("handle Add", values);
+    setQuantityMedicine(values.quantity), setMedicineId(values.medicineName);
+    const handleAddData = {
+      medicineId: medicineDataDetail.medicinesid,
+      medicineName: medicineDataDetail.medicinesname,
+      afternoonDosage: values.afternoonDosage,
+      days: values.days,
+      eveningDosage: values.eveningDosage,
+      morningDosage: values.morningDosage,
+      nightDosage: values.nightDosage,
+      notes: values.notes,
+      price: quantityMedicine * medicineDataDetail.priceout,
+      quantity: values.quantity,
+      unit: values.unit,
+      usageInstructions: values.usageInstructions,
+    };
     const newData = {
       key: dataSource.length + 1,
       index: dataSource.length + 1,
-      ...values,
+      ...handleAddData,
     };
     setDataSource([...dataSource, newData]);
     setTotalPrice(totalPrice + values.price * values.quantity);
@@ -120,11 +155,11 @@ function MedicineForm() {
           style={{ flex: "1 1 220px" }}
         >
           <Select placeholder="Tên thuốc" style={{ width: "100%" }}>
-            <Option value="Keo C">Keo C</Option>
-            <Option value="Musonbay">Musonbay</Option>
-            <Option value="Salbu 2">Salbu 2</Option>
-            <Option value="Bromhexin">Bromhexin</Option>
-            <Option value="Sure MTP">Sure MTP</Option>
+            {medicineData.map((medicine, index) => (
+              <Option key={medicine.medicinesid} value={medicine.medicinesid}>
+                {medicine.medicinesname}
+              </Option>
+            ))}
           </Select>
         </Form.Item>
         <Form.Item
@@ -188,17 +223,7 @@ function MedicineForm() {
             style={{ width: "100%" }}
           />
         </Form.Item>
-        <Form.Item
-          name="price"
-          rules={[{ required: true, message: "Vui lòng nhập đơn giá" }]}
-          style={{ flex: "1 1 120px" }}
-        >
-          <InputNumber
-            min={0}
-            placeholder="Đơn giá"
-            style={{ width: "100%" }}
-          />
-        </Form.Item>
+
         <Form.Item name="usageInstructions" style={{ flex: "1 1 150px" }}>
           <Input placeholder="Đường dùng" style={{ width: "100%" }} />
         </Form.Item>
