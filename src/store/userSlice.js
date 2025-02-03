@@ -12,7 +12,7 @@ export const fetchCreateUser = createAsyncThunk(
   async (data) => {
     const res = await userServices.create(data);
     console.log("ress", res);
-    return res;
+    return res.data.user;
   }
 );
 
@@ -27,4 +27,4 @@ const userSlice = createSlice({
   },
 });
 
-export default userSlice;
+export default userSlice.reducer;
