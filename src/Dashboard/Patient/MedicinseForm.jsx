@@ -5,7 +5,7 @@ import { fetchMedicineDetail, fetchMedicines } from "../../store/medicineSlice";
 
 const { Option } = Select;
 
-function MedicineForm() {
+function MedicineForm({ onMedicineChange }) {
   const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -96,37 +96,43 @@ function MedicineForm() {
     },
   ];
 
-  useEffect(() => {
-    dispacth(fetchMedicineDetail(medicineId));
-  }, [form]);
-
-  const handleAdd = (values) => {
+  const handleAdd = async (values) => {
     console.log("handle Add", values);
-    setQuantityMedicine(values.quantity), setMedicineId(values.medicineName);
+    const result = await dispacth(
+      fetchMedicineDetail(values.medicineName)
+    ).unwrap(); // Use unwrap if you're using Redux Toolkit
+
+    const medicineDetail = result || {}; // Ensure a default fallback
+    if (!medicineDetail) {
+      console.error("Failed to fetch medicine details");
+      return;
+    }
+
+    const quantity = values.quantity;
     const handleAddData = {
-      medicineId: medicineDataDetail.medicinesid,
-      medicineName: medicineDataDetail.medicinesname,
+      medicineId: medicineDetail.medicinesid,
+      medicineName: medicineDetail.medicinesname,
       afternoonDosage: values.afternoonDosage,
       days: values.days,
       eveningDosage: values.eveningDosage,
       morningDosage: values.morningDosage,
       nightDosage: values.nightDosage,
       notes: values.notes,
-      price: quantityMedicine * medicineDataDetail.priceout,
+      price: quantity * medicineDetail.priceout,
       quantity: values.quantity,
       unit: values.unit,
       usageInstructions: values.usageInstructions,
     };
+
     const newData = {
       key: dataSource.length + 1,
       index: dataSource.length + 1,
       ...handleAddData,
     };
     setDataSource([...dataSource, newData]);
-    setTotalPrice(totalPrice + values.price * values.quantity);
+    setTotalPrice(totalPrice + handleAddData.price);
     form.resetFields();
   };
-
   const handleDelete = (key) => {
     const updatedDataSource = dataSource.filter((item) => item.key !== key);
     const deletedItem = dataSource.find((item) => item.key === key);
