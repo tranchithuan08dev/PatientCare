@@ -13,6 +13,9 @@ function DiagnosisForm() {
 
   const [form] = Form.useForm();
   const [medicineData, setMedicineData] = useState([]);
+  const [diagnosisData, setDiagnosisData] = useState({});
+  console.log("medicineData", medicineData);
+  console.log("diagnosisData", diagnosisData);
 
   const onFinish = (values) => {
     const diagnosis = {
@@ -27,7 +30,9 @@ function DiagnosisForm() {
       resolution: values.resolution,
       nextappointment: dayjs(values.nextappointment).format("YYYY-MM-DD"),
     };
-    console.log("Form Submitted:", diagnosis);
+    console.log("diagnosis", diagnosis);
+
+    setDiagnosisData(diagnosis);
   };
 
   const handleOpen = () => {
@@ -157,23 +162,13 @@ function DiagnosisForm() {
 
         {/* Medicine Form */}
 
-        {open ? (
-          <></>
-        ) : (
-          <div style={{ textAlign: "center", marginTop: "20px" }}>
-            <Button
-              type="primary"
-              htmlType="submit"
-              onClick={() => {
-                handleOpen();
-              }}
-            >
-              Tiếp Theo
-            </Button>
-          </div>
-        )}
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          <Button type="primary" htmlType="submit" onClick={handleOpen}>
+            Tiếp Theo
+          </Button>
+        </div>
       </Form>
-      {open && <MedicineForm />}
+      {open && <MedicineForm onMedicineChange={setMedicineData} />}
     </div>
   );
 }
