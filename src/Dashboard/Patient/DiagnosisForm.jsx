@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Form, Input, Radio, DatePicker, Button, Row, Col } from "antd";
 import MedicineForm from "./MedicinseForm"; // Ensure MedicineForm doesn't wrap in a <form> tag
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
+import { fetchCreateDiagnosis } from "../../store/diagnosisSlice";
 const { TextArea } = Input;
 
 function DiagnosisForm() {
   const dataUser = useSelector((state) => state.USER.createUser);
-  console.log("dataUser", dataUser);
   const [open, setOpen] = useState(false);
-  console.log("open", open);
-
   const [form] = Form.useForm();
   const [medicineData, setMedicineData] = useState([]);
   const [diagnosisData, setDiagnosisData] = useState({});
+  const dispacth = useDispatch();
+
   console.log("medicineData", medicineData);
   console.log("diagnosisData", diagnosisData);
 
@@ -24,13 +24,13 @@ function DiagnosisForm() {
       bloodpressure: values.bloodpressure,
       height: values.height,
       weight: values.weight,
+      temperature: values.temperature,
       medicalhistory: values.medicalhistory,
       clinicalsigns: values.clinicalsigns,
       diagnosis: values.diagnosis,
       resolution: values.resolution,
       nextappointment: dayjs(values.nextappointment).format("YYYY-MM-DD"),
     };
-    console.log("diagnosis", diagnosis);
 
     setDiagnosisData(diagnosis);
   };
@@ -55,6 +55,11 @@ function DiagnosisForm() {
       });
     }
   }, [dataUser, form]);
+
+  const handleSaveDiagnosis = () => {
+    const data = { diagnois: diagnosisData, medicinesDetails: medicineData };
+    dispacth(fetchCreateDiagnosis(data));
+  };
 
   return (
     <div
@@ -169,6 +174,11 @@ function DiagnosisForm() {
         </div>
       </Form>
       {open && <MedicineForm onMedicineChange={setMedicineData} />}
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
+        <Button type="primary" htmlType="submit" onClick={handleSaveDiagnosis}>
+          Lưu
+        </Button>
+      </div>
     </div>
   );
 }
