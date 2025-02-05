@@ -9,17 +9,8 @@ function MedicineForm({ onMedicineChange }) {
   const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [quantityMedicine, setQuantityMedicine] = useState(0);
-  const [medicineId, setMedicineId] = useState();
   const dispacth = useDispatch();
   const medicineData = useSelector((state) => state.MEDICINE.medicines);
-  const medicineDataDetail = useSelector(
-    (state) => state.MEDICINE.medicineDetail
-  );
-  console.log("medicineDataDetail", medicineDataDetail);
-
-  console.log("dataSource", dataSource);
-  // console.log("medicineData", medicineData);
   useEffect(() => {
     dispacth(fetchMedicines());
   }, []);
@@ -97,12 +88,11 @@ function MedicineForm({ onMedicineChange }) {
   ];
 
   const handleAdd = async (values) => {
-    console.log("handle Add", values);
     const result = await dispacth(
       fetchMedicineDetail(values.medicineName)
-    ).unwrap(); // Use unwrap if you're using Redux Toolkit
+    ).unwrap();
 
-    const medicineDetail = result || {}; // Ensure a default fallback
+    const medicineDetail = result || {};
     if (!medicineDetail) {
       console.error("Failed to fetch medicine details");
       return;
@@ -131,6 +121,7 @@ function MedicineForm({ onMedicineChange }) {
     };
     setDataSource([...dataSource, newData]);
     setTotalPrice(totalPrice + handleAddData.price);
+    onMedicineChange([...dataSource, newData]);
     form.resetFields();
   };
   const handleDelete = (key) => {
