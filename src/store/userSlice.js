@@ -2,10 +2,21 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import userServices from "../services/userService";
 
 const initialState = {
+  users: [],
   createUser: {},
 };
 
 const name = `user`;
+
+export const fetchGetAllUser = createAsyncThunk(
+  `${name}/fetchGetAllUser`,
+  async () => {
+    const res = await userServices.getAll();
+    console.log("res", res);
+
+    return res.data.user;
+  }
+);
 
 export const fetchCreateUser = createAsyncThunk(
   `${name}/fetchCreateUser`,
@@ -23,6 +34,9 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCreateUser.fulfilled, (state, action) => {
       state.createUser = action.payload;
+    });
+    builder.addCase(fetchGetAllUser.fulfilled, (state, action) => {
+      state.users = action.payload;
     });
   },
 });
