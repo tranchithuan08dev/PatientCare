@@ -17,8 +17,10 @@ import {
   fetchUpdateMedicine,
 } from "../../store/medicineSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { SearchOutlined } from "@ant-design/icons";
 
 const ListMedicine = () => {
+  const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const [medicineId, setMedicineId] = useState();
   const [form] = Form.useForm();
@@ -28,6 +30,9 @@ const ListMedicine = () => {
     (state) => state.MEDICINE.medicineDetail
   );
 
+  const handleSearch = (e) => {
+    setSearchText(e.target.value);
+  };
   useEffect(() => {
     dispatch(fetchMedicines());
   }, [dispatch]);
@@ -109,14 +114,18 @@ const ListMedicine = () => {
     },
   ];
 
-  const data = medicineData.map((item) => ({
-    key: item.medicinesid,
-    medicinesname: item.medicinesname,
-    quantity: item.quantity,
-    priceIn: item.pricein,
-    priceOut: item.priceout,
-    tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
-  }));
+  const data = medicineData
+    .filter((item) =>
+      item.medicinesname.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .map((item) => ({
+      key: item.medicinesid,
+      medicinesname: item.medicinesname,
+      quantity: item.quantity,
+      priceIn: item.pricein,
+      priceOut: item.priceout,
+      tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
+    }));
 
   //Update
   const submitForm = (values) => {
@@ -146,7 +155,20 @@ const ListMedicine = () => {
   return (
     <div>
       <h2 className="mb-4 text-center">Danh Sách Thuốc</h2>
-
+      <div style={{ textAlign: "right", marginBottom: 20 }}>
+        <Input
+          placeholder="Tìm kiếm theo tên thuốc"
+          prefix={<SearchOutlined />}
+          value={searchText}
+          onChange={handleSearch}
+          style={{
+            width: 300,
+            borderRadius: 8,
+            padding: "5px 15px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        />
+      </div>
       <Table columns={columns} dataSource={data} />
 
       <Drawer
