@@ -7,6 +7,9 @@ const userServices = {
   getAll: () => {
     return API.call().get(`/user/getAll`);
   },
+  getDetail: (id) => {
+    return API.call().get(`/user/getdetail?id=${id}`);
+  },
 };
 
 export default userServices;
