@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Table, Input, Button, Space } from "antd";
+import { Table, Input, Button, Space, Drawer, Tabs } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGetAllUser } from "../../store/userSlice";
 import dayjs from "dayjs";
+import UserDetail from "./UserDetail";
+import DiagnosisDetail from "./DiagnosisDetail";
+import MedicineDetail from "./MedicineDetail";
 
 const ListPatient = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(false);
   const userData = useSelector((state) => state.USER.users);
   console.log("userData", userData);
 
@@ -28,14 +32,24 @@ const ListPatient = () => {
           key: item.userid,
           fullname: item.fullname,
           gender: item.gender,
-          dateofbirth: dayjs(item.dateofbirth).format("DD/MM/YYYY"),
+          dateofbirth: `${dayjs(item.dateofbirth).format(
+            "DD/MM/YYYY"
+          )} - ${calculateAge(item.dateofbirth)} Tuổi`,
+          date: dayjs(item.createat).format("DD/MM/YYYY"),
           phonenumber: item.phonenumber,
-          age: calculateAge(item.dateofbirth),
         }))
         .filter((item) =>
           item.fullname.toLowerCase().includes(searchText.toLowerCase())
         )
     : [];
+
+  const showDrawer = (id) => {
+    setOpen(true);
+  };
+
+  const onClose = () => {
+    setOpen(false);
+  };
 
   const columns = [
     {
@@ -55,9 +69,9 @@ const ListPatient = () => {
       key: "dateofbirth",
     },
     {
-      title: "Tuổi",
-      dataIndex: "age",
-      key: "age",
+      title: "Ngày Khám",
+      dataIndex: "date",
+      key: "date",
     },
     {
       title: "Số Điện Thoại",
@@ -69,12 +83,32 @@ const ListPatient = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary">Xem Chi Tiết</Button>
+          <Button type="default">Khám Bệnh</Button>
+          <Button type="primary" onClick={() => showDrawer(record.key)}>
+            Xem Chi Tiết
+          </Button>
         </Space>
       ),
     },
   ];
 
+  const items = [
+    {
+      key: "1",
+      label: "Hồ sơ",
+      children: <UserDetail />,
+    },
+    {
+      key: "2",
+      label: "Chuẩn Đoán",
+      children: <DiagnosisDetail />,
+    },
+    {
+      key: "3",
+      label: "Thuốc",
+      children: <MedicineDetail />,
+    },
+  ];
   return (
     <div style={{ margin: "0 20px" }}>
       <h2 className="mb-4 text-center">Danh sách bệnh nhân</h2>
@@ -99,13 +133,41 @@ const ListPatient = () => {
       <Table
         columns={columns}
         dataSource={filteredData}
-        pagination={{ pageSize: 10 }}
+        pagination={{ pageSize: 15 }}
         style={{
           boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
           borderRadius: 10,
           overflow: "hidden",
         }}
       />
+
+      <Drawer
+        title="Chi tiết"
+        width={1020}
+        onClose={onClose}
+        open={open}
+        extra={
+          <Space>
+            <Button type="primary" onClick={onClose}>
+              Hủy
+            </Button>
+          </Space>
+        }
+      >
+        <Tabs
+          defaultActiveKey="1"
+          items={items}
+          tabBarStyle={{
+            display: "flex",
+            justifyContent: "center",
+            fontSize: "16px",
+            fontWeight: "bold",
+            color: "#333",
+            borderBottom: "2px solid #d9d9d9",
+          }}
+          size="large"
+        />
+      </Drawer>
     </div>
   );
 };
