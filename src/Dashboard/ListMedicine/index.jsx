@@ -108,7 +108,7 @@ const ListMedicine = () => {
           onClick={() => showDrawer(record.key)}
           className="mb-3"
         >
-          Edit
+          Chỉnh sửa
         </Button>
       ),
     },
