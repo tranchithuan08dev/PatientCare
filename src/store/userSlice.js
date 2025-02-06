@@ -4,6 +4,7 @@ import userServices from "../services/userService";
 const initialState = {
   users: [],
   createUser: {},
+  userDetail: {},
 };
 
 const name = `user`;
@@ -27,6 +28,14 @@ export const fetchCreateUser = createAsyncThunk(
   }
 );
 
+export const fetchUserDetail = createAsyncThunk(
+  `${name}/fetchUserDetail`,
+  async (id) => {
+    const res = await userServices.getDetail(id);
+    return res.data.data;
+  }
+);
+
 const userSlice = createSlice({
   name,
   initialState,
@@ -37,6 +46,9 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchGetAllUser.fulfilled, (state, action) => {
       state.users = action.payload;
+    });
+    builder.addCase(fetchUserDetail.fulfilled, (state, action) => {
+      state.userDetail = action.payload;
     });
   },
 });
