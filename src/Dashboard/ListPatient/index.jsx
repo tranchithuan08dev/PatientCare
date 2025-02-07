@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Input, Button, Space, Drawer, Tabs } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchGetAllUser } from "../../store/userSlice";
+import { fetchGetAllUser, fetchUserDetail } from "../../store/userSlice";
 import dayjs from "dayjs";
 import UserDetail from "./UserDetail";
 import DiagnosisDetail from "./DiagnosisDetail";
@@ -31,7 +31,7 @@ const ListPatient = () => {
         .map((item) => ({
           key: item.userid,
           fullname: item.fullname,
-          gender: item.gender,
+          gender: item.gender.toLowerCase() == "female" ? "Nữ" : "Nam",
           dateofbirth: `${dayjs(item.dateofbirth).format(
             "DD/MM/YYYY"
           )} - ${calculateAge(item.dateofbirth)} Tuổi`,
@@ -44,6 +44,8 @@ const ListPatient = () => {
     : [];
 
   const showDrawer = (id) => {
+    console.log("idUsser", id);
+    dispatch(fetchUserDetail(id));
     setOpen(true);
   };
 
