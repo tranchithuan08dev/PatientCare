@@ -3,6 +3,7 @@ import { Form, Input, Radio, DatePicker, Button } from "antd";
 import { useDispatch } from "react-redux";
 import { fetchCreateUser } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 function Patient() {
   const dispatch = useDispatch();
@@ -14,6 +15,7 @@ function Patient() {
       dateOfBirth: values.dob?.format("YYYY-MM-DD"),
       phoneNumber: values.phone,
       address: values.address,
+      createat: dayjs().format("YYYY-MM-DD"),
       role: "Patient",
     };
 
