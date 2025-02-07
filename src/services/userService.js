@@ -10,6 +10,9 @@ const userServices = {
   getDetail: (id) => {
     return API.call().get(`/user/getdetail?id=${id}`);
   },
+  update: (data) => {
+    return API.call().post(`/user/update?id=${data.id}`, data);
+  },
 };
 
 export default userServices;
