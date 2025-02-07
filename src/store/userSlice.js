@@ -5,6 +5,7 @@ const initialState = {
   users: [],
   createUser: {},
   userDetail: {},
+  update: {},
 };
 
 const name = `user`;
@@ -36,6 +37,16 @@ export const fetchUserDetail = createAsyncThunk(
   }
 );
 
+export const fetchUserUpdate = createAsyncThunk(
+  `${name}/fetchUserUpdate`,
+  async (data) => {
+    const res = await userServices.update(data);
+    console.log("res update", res);
+
+    return res.data;
+  }
+);
+
 const userSlice = createSlice({
   name,
   initialState,
@@ -49,6 +60,9 @@ const userSlice = createSlice({
     });
     builder.addCase(fetchUserDetail.fulfilled, (state, action) => {
       state.userDetail = action.payload;
+    });
+    builder.addCase(fetchUserUpdate.fulfilled, (state, action) => {
+      state.update = action.payload;
     });
   },
 });
