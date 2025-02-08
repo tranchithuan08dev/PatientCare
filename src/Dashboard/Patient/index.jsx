@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Form, Input, Radio, DatePicker, Button } from "antd";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchCreateUser } from "../../store/userSlice";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -8,6 +8,10 @@ import dayjs from "dayjs";
 function Patient() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dataUser = useSelector((state) => state.USER.userDetail);
+  const [form] = Form.useForm();
+  console.log("usserdata", dataUser);
+
   const onFinish = (values) => {
     const data = {
       fullName: values.fullName,
@@ -24,6 +28,18 @@ function Patient() {
     });
   };
 
+  useEffect(() => {
+    if (dataUser) {
+      form.setFieldsValue({
+        fullName: dataUser.fullname,
+        gender: dataUser.gender,
+        dob: dayjs(dataUser.dateOfBirth),
+        phone: dataUser.phonenumber,
+        address: dataUser.address,
+      });
+    }
+  }, [dataUser, form]);
+
   return (
     <div
       style={{ padding: "20px", background: "#f9f9f9", borderRadius: "8px" }}
@@ -31,7 +47,7 @@ function Patient() {
       <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
         Nhập thông tin khám bệnh
       </h2>
-      <Form layout="vertical" onFinish={onFinish}>
+      <Form layout="vertical" onFinish={onFinish} form={form}>
         <h3 style={{ marginBottom: "20px" }}>Nhập thông tin bệnh nhân:</h3>
         <div className="row" style={{ gap: "16px" }}>
           <div className="col-md-4">
