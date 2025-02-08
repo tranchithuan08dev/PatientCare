@@ -7,11 +7,13 @@ import dayjs from "dayjs";
 import UserDetail from "./UserDetail";
 import DiagnosisDetail from "./DiagnosisDetail";
 import MedicineDetail from "./MedicineDetail";
+import { useNavigate } from "react-router-dom";
 
 const ListPatient = () => {
   const [searchText, setSearchText] = useState("");
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   const userData = useSelector((state) => state.USER.users);
   console.log("userData", userData);
 
@@ -49,6 +51,10 @@ const ListPatient = () => {
     setOpen(true);
   };
 
+  const handleGetId = (id) => {
+    dispatch(fetchUserDetail(id));
+    navigate("/patient");
+  };
   const onClose = () => {
     setOpen(false);
   };
@@ -85,7 +91,9 @@ const ListPatient = () => {
       key: "action",
       render: (_, record) => (
         <Space size="middle">
-          <Button type="default">Khám Bệnh</Button>
+          <Button type="default" onClick={() => handleGetId(record.key)}>
+            Khám Bệnh
+          </Button>
           <Button type="primary" onClick={() => showDrawer(record.key)}>
             Xem Chi Tiết
           </Button>
