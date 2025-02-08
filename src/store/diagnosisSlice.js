@@ -4,6 +4,7 @@ import diagnosisService from "../services/diagnosisService";
 const initialState = {
   createDiagnosis: {},
   getDetailDiagnosis: {},
+  getDetailMedicine: [],
 };
 
 const name = `diagnosis`;
@@ -25,6 +26,15 @@ export const fetchDiagnosisDetail = createAsyncThunk(
   }
 );
 
+export const fetchMedicineDetail = createAsyncThunk(
+  `${name}/fetchMedicineDetail`,
+  async (id) => {
+    const res = await diagnosisService.getDetailMedicine(id);
+    console.log("res", res);
+    return res.data.medicine;
+  }
+);
+
 const diagnosisSlice = createSlice({
   name,
   initialState,
@@ -35,6 +45,9 @@ const diagnosisSlice = createSlice({
     });
     builder.addCase(fetchDiagnosisDetail.fulfilled, (state, action) => {
       state.getDetailDiagnosis = action.payload;
+    });
+    builder.addCase(fetchMedicineDetail.fulfilled, (state, action) => {
+      state.getDetailMedicine = action.payload;
     });
   },
 });
