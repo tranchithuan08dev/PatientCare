@@ -8,7 +8,6 @@ const { TextArea } = Input;
 
 function DiagnosisForm() {
   const dataUser = useSelector((state) => state.USER.createUser);
-  const [open, setOpen] = useState(false);
   const [form] = Form.useForm();
   const [medicineData, setMedicineData] = useState([]);
   const [diagnosisData, setDiagnosisData] = useState({});
@@ -16,28 +15,6 @@ function DiagnosisForm() {
 
   console.log("medicineData", medicineData);
   console.log("diagnosisData", diagnosisData);
-
-  const onFinish = (values) => {
-    const diagnosis = {
-      pulserate: values.pulserate,
-      respirationrate: values.respirationrate,
-      bloodpressure: values.bloodpressure,
-      height: values.height,
-      weight: values.weight,
-      temperature: values.temperature,
-      medicalhistory: values.medicalhistory,
-      clinicalsigns: values.clinicalsigns,
-      diagnosis: values.diagnosis,
-      resolution: values.resolution,
-      nextappointment: dayjs(values.nextappointment).format("YYYY-MM-DD"),
-    };
-
-    setDiagnosisData(diagnosis);
-  };
-
-  const handleOpen = () => {
-    setOpen(true);
-  };
 
   const calculateAge = (dob) => {
     return dayjs().diff(dayjs(dob), "year");
@@ -57,15 +34,44 @@ function DiagnosisForm() {
   }, [dataUser, form]);
 
   const handleSaveDiagnosis = () => {
-    const data = { diagnois: diagnosisData, medicinesDetails: medicineData };
-    dispacth(fetchCreateDiagnosis(data));
+    form
+      .validateFields()
+      .then((values) => {
+        const diagnosisdata = {
+          pulserate: Number(values.pulserate),
+          respirationrate: Number(values.respirationrate),
+          bloodpressure: values.bloodpressure,
+          height: Number(values.height),
+          weight: Number(values.weight),
+          temperature: Number(values.temperature),
+          medicalhistory: values.medicalhistory,
+          clinicalsigns: values.clinicalsigns,
+          diagnosis: values.diagnosis,
+          resolution: values.resolution,
+          nextappointment: values.nextappointment
+            ? dayjs(values.nextappointment).format("YYYY-MM-DD")
+            : null,
+        };
+
+        setDiagnosisData(diagnosis); // Cập nhật dữ liệu
+        const data = {
+          diagnois: diagnosisdata,
+          medicinesDetails: medicineData,
+        };
+        console.log("data111", data);
+
+        dispacth(fetchCreateDiagnosis(data));
+      })
+      .catch((errorInfo) => {
+        console.error("Validation Failed:", errorInfo);
+      });
   };
 
   return (
     <div
       style={{ padding: "20px", background: "#f9f9f9", borderRadius: "8px" }}
     >
-      <Form layout="vertical" form={form} onFinish={onFinish}>
+      <Form layout="vertical" form={form}>
         <Row gutter={[10, 28]}>
           {/* Patient Form */}
           <Col xs={24} md={8}>
@@ -164,16 +170,9 @@ function DiagnosisForm() {
             </Form.Item>
           </Col>
         </Row>
-
-        {/* Medicine Form */}
-
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          <Button type="primary" htmlType="submit" onClick={handleOpen}>
-            Tiếp Theo
-          </Button>
-        </div>
       </Form>
-      {open && <MedicineForm onMedicineChange={setMedicineData} />}
+
+      <MedicineForm onMedicineChange={setMedicineData} />
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <Button type="primary" htmlType="submit" onClick={handleSaveDiagnosis}>
           Lưu
