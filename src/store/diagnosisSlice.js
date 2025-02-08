@@ -3,6 +3,7 @@ import diagnosisService from "../services/diagnosisService";
 
 const initialState = {
   createDiagnosis: {},
+  getDetailDiagnosis: {},
 };
 
 const name = `diagnosis`;
@@ -11,8 +12,16 @@ export const fetchCreateDiagnosis = createAsyncThunk(
   `${name}/fetchCreateDiagnosis`,
   async (data) => {
     const res = await diagnosisService.create(data);
-    console.log("ress", res);
     return res.data;
+  }
+);
+
+export const fetchDiagnosisDetail = createAsyncThunk(
+  `${name}/fetchDiagnosisDetail`,
+  async (id) => {
+    const res = await diagnosisService.getDetail(id);
+    console.log("res", res);
+    return res.data.diagnosis;
   }
 );
 
@@ -23,6 +32,9 @@ const diagnosisSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchCreateDiagnosis.fulfilled, (state, action) => {
       state.createUser = action.payload;
+    });
+    builder.addCase(fetchDiagnosisDetail.fulfilled, (state, action) => {
+      state.getDetailDiagnosis = action.payload;
     });
   },
 });
