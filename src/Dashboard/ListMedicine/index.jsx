@@ -250,7 +250,7 @@ const ListMedicine = () => {
               >
                 <InputNumber
                   defaultValue={1000}
-                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  style={{ width: "100%" }}
                   formatter={(value) =>
                     `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
@@ -268,7 +268,7 @@ const ListMedicine = () => {
               >
                 <InputNumber
                   defaultValue={1000}
-                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  style={{ width: "100%" }}
                   formatter={(value) =>
                     `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
                   }
