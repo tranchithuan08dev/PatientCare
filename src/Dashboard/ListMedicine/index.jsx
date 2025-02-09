@@ -10,6 +10,7 @@ import {
   Col,
   Space,
   message,
+  notification,
 } from "antd";
 import {
   fetchMedicineDetail,
@@ -18,7 +19,7 @@ import {
 } from "../../store/medicineSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined } from "@ant-design/icons";
-
+import convertVND from "../../helpers/index";
 const ListMedicine = () => {
   const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
@@ -113,19 +114,43 @@ const ListMedicine = () => {
       ),
     },
   ];
+  const openNotification = (name) => {
+    notification.warning({
+      message: (
+        <span
+          style={{ fontWeight: "bold", color: "#ff4d4f", fontSize: "16px" }}
+        >
+          Cảnh báo sắp hết thuốc
+        </span>
+      ),
+      description: (
+        <span style={{ fontSize: "14px", color: "#333" }}>
+          Số lượng của thuốc{" "}
+          <span style={{ fontWeight: "bold", color: "#1677ff" }}>{name}</span>{" "}
+          dưới 20. Vui lòng nhập thêm.
+        </span>
+      ),
+      duration: 20,
+    });
+  };
 
   const data = medicineData
     .filter((item) =>
       item.medicinesname.toLowerCase().includes(searchText.toLowerCase())
     )
-    .map((item) => ({
-      key: item.medicinesid,
-      medicinesname: item.medicinesname,
-      quantity: item.quantity,
-      priceIn: item.pricein,
-      priceOut: item.priceout,
-      tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
-    }));
+    .map((item) => {
+      if (item.quantity < 20) {
+        openNotification(item.medicinesname);
+      }
+      return {
+        key: item.medicinesid,
+        medicinesname: item.medicinesname,
+        quantity: item.quantity,
+        priceIn: convertVND(Number(item.pricein)),
+        priceOut: convertVND(Number(item.priceout)),
+        tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
+      };
+    });
 
   //Update
   const submitForm = (values) => {
