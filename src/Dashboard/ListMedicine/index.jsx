@@ -11,6 +11,7 @@ import {
   Space,
   message,
   notification,
+  InputNumber,
 } from "antd";
 import {
   fetchMedicineDetail,
@@ -20,10 +21,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { SearchOutlined } from "@ant-design/icons";
 import convertVND from "../../helpers/index";
+
 const ListMedicine = () => {
   const [searchText, setSearchText] = useState("");
   const [open, setOpen] = useState(false);
   const [medicineId, setMedicineId] = useState();
+  const [notifiedMedicines, setNotifiedMedicines] = useState(new Set());
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const medicineData = useSelector((state) => state.MEDICINE.medicines);
@@ -34,6 +37,7 @@ const ListMedicine = () => {
   const handleSearch = (e) => {
     setSearchText(e.target.value);
   };
+
   useEffect(() => {
     dispatch(fetchMedicines());
   }, [dispatch]);
@@ -43,8 +47,8 @@ const ListMedicine = () => {
       form.setFieldsValue({
         medicineName: medicineDataDetail.medicinesname,
         quantity: medicineDataDetail.quantity,
-        priceIn: medicineDataDetail.pricein,
-        priceOut: medicineDataDetail.priceout,
+        priceIn: convertVND(medicineDataDetail.pricein),
+        priceOut: convertVND(medicineDataDetail.priceout),
         description: medicineDataDetail.description,
         dosageinstructions: medicineDataDetail.dosageinstructions,
       });
@@ -54,11 +58,74 @@ const ListMedicine = () => {
   const showDrawer = (medicineId) => {
     setOpen(true);
     dispatch(fetchMedicineDetail(medicineId));
-    setMedicineId(medicineId), console.log("id", medicineId);
+    setMedicineId(medicineId);
   };
 
   const onClose = () => {
     setOpen(false);
+  };
+
+  const openNotification = (name) => {
+    notification.warning({
+      message: (
+        <span
+          style={{ fontWeight: "bold", color: "#ff4d4f", fontSize: "16px" }}
+        >
+          Cảnh báo sắp hết thuốc
+        </span>
+      ),
+      description: (
+        <span style={{ fontSize: "14px", color: "#333" }}>
+          Số lượng của thuốc{" "}
+          <span style={{ fontWeight: "bold", color: "#1677ff" }}>{name}</span>{" "}
+          dưới 20 Viên. Vui lòng nhập thêm.
+        </span>
+      ),
+      duration: 20,
+    });
+  };
+
+  const data = medicineData
+    .filter((item) =>
+      item.medicinesname.toLowerCase().includes(searchText.toLowerCase())
+    )
+    .map((item) => {
+      if (item.quantity < 20 && !notifiedMedicines.has(item.medicinesid)) {
+        openNotification(item.medicinesname);
+        setNotifiedMedicines((prev) => new Set(prev).add(item.medicinesid));
+      }
+      return {
+        key: item.medicinesid,
+        medicinesname: item.medicinesname,
+        quantity: item.quantity,
+        priceIn: convertVND(item.pricein) + "    VND",
+        priceOut: convertVND(item.priceout) + "   VND",
+        tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
+      };
+    });
+
+  const submitForm = (values) => {
+    const data = {
+      id: medicineId,
+      medicinesName: values.medicineName,
+      priceIn: parseFloat(String(values.priceIn).replace(/,/g, "")),
+      priceOut: parseFloat(String(values.priceOut).replace(/,/g, "")),
+      quantity: values.quantity,
+      description: values.description,
+      dosageInstructions: values.dosageinstructions,
+    };
+    console.log("dataupdate", data);
+
+    dispatch(fetchUpdateMedicine(data))
+      .then(() => {
+        message.success("Medicine updated successfully!");
+        setOpen(false);
+        dispatch(fetchMedicines());
+      })
+      .catch((error) => {
+        message.error("Failed to update medicine. Please try again.");
+        console.error(error);
+      });
   };
 
   const columns = [
@@ -114,69 +181,7 @@ const ListMedicine = () => {
       ),
     },
   ];
-  const openNotification = (name) => {
-    notification.warning({
-      message: (
-        <span
-          style={{ fontWeight: "bold", color: "#ff4d4f", fontSize: "16px" }}
-        >
-          Cảnh báo sắp hết thuốc
-        </span>
-      ),
-      description: (
-        <span style={{ fontSize: "14px", color: "#333" }}>
-          Số lượng của thuốc{" "}
-          <span style={{ fontWeight: "bold", color: "#1677ff" }}>{name}</span>{" "}
-          dưới 20. Vui lòng nhập thêm.
-        </span>
-      ),
-      duration: 20,
-    });
-  };
 
-  const data = medicineData
-    .filter((item) =>
-      item.medicinesname.toLowerCase().includes(searchText.toLowerCase())
-    )
-    .map((item) => {
-      if (item.quantity < 20) {
-        openNotification(item.medicinesname);
-      }
-      return {
-        key: item.medicinesid,
-        medicinesname: item.medicinesname,
-        quantity: item.quantity,
-        priceIn: convertVND(Number(item.pricein)),
-        priceOut: convertVND(Number(item.priceout)),
-        tags: item.quantity > 0 ? ["còn hàng"] : ["hết hàng"],
-      };
-    });
-
-  //Update
-  const submitForm = (values) => {
-    console.log("values", values);
-    const data = {
-      id: medicineId,
-      medicinesName: values.medicineName,
-      priceIn: values.priceIn,
-      priceOut: values.priceOut,
-      quantity: values.quantity,
-      description: values.description,
-      dosageInstructions: values.dosageinstructions,
-    };
-    console.log("data", data);
-
-    dispatch(fetchUpdateMedicine(data))
-      .then(() => {
-        message.success("Medicine updated successfully!");
-        setOpen(false);
-        dispatch(fetchMedicines());
-      })
-      .catch((error) => {
-        message.error("Failed to update medicine. Please try again.");
-        console.error(error);
-      });
-  };
   return (
     <div>
       <h2 className="mb-4 text-center">Danh Sách Thuốc</h2>
@@ -243,7 +248,14 @@ const ListMedicine = () => {
                   { required: true, message: "Vui lòng nhập giá nhập vào" },
                 ]}
               >
-                <Input placeholder="Giá nhập vào" />
+                <InputNumber
+                  defaultValue={1000}
+                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                />
               </Form.Item>
             </Col>
             <Col span={12}>
@@ -254,10 +266,18 @@ const ListMedicine = () => {
                   { required: true, message: "Vui lòng nhập giá bán ra" },
                 ]}
               >
-                <Input placeholder="Giá bán ra" />
+                <InputNumber
+                  defaultValue={1000}
+                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+                />
               </Form.Item>
             </Col>
           </Row>
+
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item
@@ -274,7 +294,7 @@ const ListMedicine = () => {
               <Form.Item
                 name="dosageinstructions"
                 label="Liều Dùng"
-                rules={[{ required: true, message: "Mô tả mõi khi sự dụng" }]}
+                rules={[{ required: true, message: "Mô tả mỗi khi sử dụng" }]}
               >
                 <Input.TextArea rows={4} placeholder="Mô tả thuốc" />
               </Form.Item>
