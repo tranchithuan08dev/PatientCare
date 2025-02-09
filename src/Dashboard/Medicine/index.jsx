@@ -1,5 +1,14 @@
 import React from "react";
-import { Button, Input, Form, InputNumber, Typography, Row, Col } from "antd";
+import {
+  Button,
+  Input,
+  Form,
+  InputNumber,
+  Typography,
+  Row,
+  Col,
+  message,
+} from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { fetchCreateMedicine } from "../../store/medicineSlice";
@@ -10,9 +19,11 @@ function MedicineForm() {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const onFinish = (data) => {
+    console.log("data", data);
+
     dispatch(fetchCreateMedicine(data))
       .then(() => {
-        message.success("Bạn đã nhập thuóc thành công!");
+        message.success("Bạn đã nhập thuốc thành công!");
         form.resetFields();
       })
       .catch((error) => {
@@ -70,9 +81,12 @@ function MedicineForm() {
                 ]}
               >
                 <InputNumber
-                  style={{ width: "100%" }}
-                  min={1}
                   placeholder="Nhập giá thuốc nhập vào"
+                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
                 />
               </Form.Item>
             </Col>
@@ -90,9 +104,12 @@ function MedicineForm() {
                 ]}
               >
                 <InputNumber
-                  style={{ width: "100%" }}
-                  min={1}
                   placeholder="Nhập giá thuốc bán ra"
+                  style={{ width: "100%" }} // Đảm bảo chiều dài giống nhau
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
                 />
               </Form.Item>
             </Col>
