@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Form, Input, Radio, DatePicker, Button, Row, Col } from "antd";
+import {
+  Form,
+  Input,
+  Radio,
+  DatePicker,
+  Button,
+  Row,
+  Col,
+  message,
+} from "antd";
 import MedicineForm from "./MedicinseForm"; // Ensure MedicineForm doesn't wrap in a <form> tag
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
@@ -9,7 +18,7 @@ const { TextArea } = Input;
 function DiagnosisForm() {
   const dataUser = useSelector((state) => state.USER.createUser);
   const [form] = Form.useForm();
-  const [paymentMedicine, setPaymentMedicine] = useState();
+  const [paymentMedicine, setPaymentMedicine] = useState(0);
   const [medicineData, setMedicineData] = useState([]);
   const [diagnosisData, setDiagnosisData] = useState({});
   const dispacth = useDispatch();
@@ -67,7 +76,14 @@ function DiagnosisForm() {
         };
         console.log("data111", data);
 
-        dispacth(fetchCreateDiagnosis(data));
+        dispatch(fetchCreateDiagnosis(data))
+          .then(() => {
+            message.success("Bạn đã lưu thành công");
+          })
+          .catch((error) => {
+            console.error("Error occurred:", error);
+            message.error("Đã xảy ra lỗi khi lưu");
+          });
       })
       .catch((errorInfo) => {
         console.error("Validation Failed:", errorInfo);
