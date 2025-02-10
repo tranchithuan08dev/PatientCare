@@ -9,12 +9,15 @@ const { TextArea } = Input;
 function DiagnosisForm() {
   const dataUser = useSelector((state) => state.USER.createUser);
   const [form] = Form.useForm();
+  const [paymentMedicine, setPaymentMedicine] = useState();
   const [medicineData, setMedicineData] = useState([]);
   const [diagnosisData, setDiagnosisData] = useState({});
   const dispacth = useDispatch();
 
   console.log("medicineData", medicineData);
   console.log("diagnosisData", diagnosisData);
+  console.log("payment", paymentMedicine);
+  console.log("date", dayjs().format("YYYY/MM/DD"));
 
   const calculateAge = (dob) => {
     return dayjs().diff(dayjs(dob), "year");
@@ -53,10 +56,14 @@ function DiagnosisForm() {
             : null,
         };
 
-        setDiagnosisData(diagnosis); // Cập nhật dữ liệu
+        setDiagnosisData(diagnosis);
         const data = {
           diagnois: diagnosisdata,
           medicinesDetails: medicineData,
+          payment: {
+            paymentdate: dayjs().format("YYYY/MM/DD"),
+            amount: paymentMedicine,
+          },
         };
         console.log("data111", data);
 
@@ -172,7 +179,10 @@ function DiagnosisForm() {
         </Row>
       </Form>
 
-      <MedicineForm onMedicineChange={setMedicineData} />
+      <MedicineForm
+        onMedicineChange={setMedicineData}
+        onPaymentChange={setPaymentMedicine}
+      />
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <Button type="primary" htmlType="submit" onClick={handleSaveDiagnosis}>
           Lưu
