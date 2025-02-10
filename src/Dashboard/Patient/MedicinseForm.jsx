@@ -5,10 +5,11 @@ import { fetchMedicineDetail, fetchMedicines } from "../../store/medicineSlice";
 
 const { Option } = Select;
 
-function MedicineForm({ onMedicineChange }) {
+function MedicineForm({ onMedicineChange, onPaymentChange }) {
   const [form] = Form.useForm();
   const [dataSource, setDataSource] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  onPaymentChange(totalPrice);
   const dispacth = useDispatch();
   const medicineData = useSelector((state) => state.MEDICINE.medicines);
   useEffect(() => {
@@ -164,7 +165,10 @@ function MedicineForm({ onMedicineChange }) {
           rules={[{ required: true, message: "Vui lòng nhập đơn vị tính" }]}
           style={{ flex: "1 1 150px" }}
         >
-          <Input placeholder="Đơn vị tính" style={{ width: "100%" }} />
+          <Select placeholder="Chọn đơn vị tính" style={{ width: "100%" }}>
+            <Select.Option value="Viên">Viên</Select.Option>
+            <Select.Option value="Ống">Ống</Select.Option>
+          </Select>
         </Form.Item>
         <Form.Item name="morningDosage" style={{ flex: "1 1 100px" }}>
           <InputNumber
