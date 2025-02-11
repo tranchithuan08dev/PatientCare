@@ -10,9 +10,7 @@ export const fetchGetAllPayment = createAsyncThunk(
   `${name}/fetchGetAllPayment`,
   async () => {
     const res = await paymentService.getAll();
-    console.log("res", res);
-
-    return res.data;
+    return res.data.payment;
   }
 );
 
