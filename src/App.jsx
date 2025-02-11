@@ -12,8 +12,8 @@ function App() {
   return (
     <>
       <Routes>
-        <Route path="/" element={<Dashboard />}>
-          <Route path="/revenue" element={<Revenue />} />
+        <Route element={<Dashboard />}>
+          <Route path="/" element={<Revenue />} />
           <Route path="/patient" element={<Patient />}>
             <Route path="diagnosisForm" element={<DiagnosisForm />} />
             <Route path="medicineform" element={<MedicineForm />} />
