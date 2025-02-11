@@ -3,6 +3,7 @@ import { CanvasJSChart } from "canvasjs-react-charts";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchGetAllPayment } from "../../store/paymentSlice";
+import convertVND from "../../helpers";
 
 const Revenue = () => {
   const [month, setMonth] = useState(new Date().getMonth() + 1); // Tháng hiện tại
@@ -19,7 +20,9 @@ const Revenue = () => {
 
   const handleSubmit = () => {
     const revenue = calculateMonthlyRevenue(paymentData, month, year);
-    message.success(`Doanh thu tháng ${month}/${year} là: ${revenue}`);
+    message.success(
+      `Doanh thu tháng ${month}/${year} là: ${convertVND(revenue)} đ`
+    );
   };
   const paymentData = useSelector((state) => state.PAYMENT.payments);
   const dispatch = useDispatch();
