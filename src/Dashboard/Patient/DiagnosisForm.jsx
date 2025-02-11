@@ -9,10 +9,11 @@ import {
   Col,
   message,
 } from "antd";
-import MedicineForm from "./MedicinseForm"; // Ensure MedicineForm doesn't wrap in a <form> tag
+import MedicineForm from "./MedicinseForm";
 import { useDispatch, useSelector } from "react-redux";
 import dayjs from "dayjs";
 import { fetchCreateDiagnosis } from "../../store/diagnosisSlice";
+import { useNavigate } from "react-router-dom";
 const { TextArea } = Input;
 
 function DiagnosisForm() {
@@ -20,13 +21,8 @@ function DiagnosisForm() {
   const [form] = Form.useForm();
   const [paymentMedicine, setPaymentMedicine] = useState(0);
   const [medicineData, setMedicineData] = useState([]);
-  const [diagnosisData, setDiagnosisData] = useState({});
-  const dispacth = useDispatch();
-
-  console.log("medicineData", medicineData);
-  console.log("diagnosisData", diagnosisData);
-  console.log("payment", paymentMedicine);
-  console.log("date", dayjs().format("YYYY/MM/DD"));
+  const dispatch = useDispatch();
+  const nagative = useNavigate();
 
   const calculateAge = (dob) => {
     return dayjs().diff(dayjs(dob), "year");
@@ -65,7 +61,6 @@ function DiagnosisForm() {
             : null,
         };
 
-        setDiagnosisData(diagnosis);
         const data = {
           diagnois: diagnosisdata,
           medicinesDetails: medicineData,
@@ -79,6 +74,7 @@ function DiagnosisForm() {
         dispatch(fetchCreateDiagnosis(data))
           .then(() => {
             message.success("Bạn đã lưu thành công");
+            nagative("/");
           })
           .catch((error) => {
             console.error("Error occurred:", error);
