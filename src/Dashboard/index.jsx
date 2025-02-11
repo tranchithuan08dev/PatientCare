@@ -36,7 +36,7 @@ const Dashboard = () => {
               key: "1",
               icon: <AreaChartOutlined />,
               label: (
-                <Link to="/revenue" className="dashboard-link">
+                <Link to="/" className="dashboard-link">
                   Doanh Thu
                 </Link>
               ),
